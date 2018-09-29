@@ -68,7 +68,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="Mybaits-plus," />
 
 
 
@@ -79,13 +79,18 @@
 
 
 
-<meta property="og:type" content="website">
-<meta property="og:title" content="Murphy&#39;s Blog">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta name="description" content="Mybatis-plus作为Mybatis的增强工具，在MyBatis的基础上只做增强不做改变，基本的CURD信手拈来，并且吸收了阿里巴巴编码规范，最适合我们这种懒惰又有重度代码洁癖的患者。 1. 问题看一个查询的例子： @RunWith(SpringRunner.class) @SpringBootTest public class SampleTest {      @Autowired">
+<meta name="keywords" content="Mybaits-plus">
+<meta property="og:type" content="article">
+<meta property="og:title" content="使用Mybatis-plus条件构造器的正确姿势">
+<meta property="og:url" content="http://yoursite.com/2018/09/29/Best-practices-using-Wrapper-in-Mybaits-plus/index.html">
 <meta property="og:site_name" content="Murphy&#39;s Blog">
+<meta property="og:description" content="Mybatis-plus作为Mybatis的增强工具，在MyBatis的基础上只做增强不做改变，基本的CURD信手拈来，并且吸收了阿里巴巴编码规范，最适合我们这种懒惰又有重度代码洁癖的患者。 1. 问题看一个查询的例子： @RunWith(SpringRunner.class) @SpringBootTest public class SampleTest {      @Autowired">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2018-09-29T11:42:17.540Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Murphy&#39;s Blog">
+<meta name="twitter:title" content="使用Mybatis-plus条件构造器的正确姿势">
+<meta name="twitter:description" content="Mybatis-plus作为Mybatis的增强工具，在MyBatis的基础上只做增强不做改变，基本的CURD信手拈来，并且吸收了阿里巴巴编码规范，最适合我们这种懒惰又有重度代码洁癖的患者。 1. 问题看一个查询的例子： @RunWith(SpringRunner.class) @SpringBootTest public class SampleTest {      @Autowired">
 
 
 
@@ -115,13 +120,13 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/"/>
+  <link rel="canonical" href="http://yoursite.com/2018/09/29/Best-practices-using-Wrapper-in-Mybaits-plus/"/>
 
 
 
 
 
-  <title>Murphy's Blog</title>
+  <title>使用Mybatis-plus条件构造器的正确姿势 | Murphy's Blog</title>
   
 
 
@@ -140,8 +145,7 @@
     
   
 
-  <div class="container sidebar-position-left 
-  page-home">
+  <div class="container sidebar-position-left page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -254,9 +258,9 @@
         <div class="content-wrap">
           <div id="content" class="content">
             
-  <section id="posts" class="posts-expand">
+
+  <div id="posts" class="posts-expand">
     
-      
 
   
 
@@ -286,9 +290,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/29/Best-practices-using-Wrapper-in-Mybaits-plus/" itemprop="url">使用Mybatis-plus条件构造器的正确姿势</a></h1>
+          <h1 class="post-title" itemprop="name headline">使用Mybatis-plus条件构造器的正确姿势</h1>
         
 
         <div class="post-meta">
@@ -360,9 +362,7 @@
       
 
       
-        
-          
-            <p><a href="http://mp.baomidou.com/" target="_blank" rel="noopener">Mybatis-plus</a>作为Mybatis的增强工具，在<a href="http://www.mybatis.org" target="_blank" rel="noopener">MyBatis</a>的基础上只做增强不做改变，基本的CURD信手拈来，并且吸收了阿里巴巴编码规范，最适合我们这种懒惰又有重度代码洁癖的患者。</p>
+        <p><a href="http://mp.baomidou.com/" target="_blank" rel="noopener">Mybatis-plus</a>作为Mybatis的增强工具，在<a href="http://www.mybatis.org" target="_blank" rel="noopener">MyBatis</a>的基础上只做增强不做改变，基本的CURD信手拈来，并且吸收了阿里巴巴编码规范，最适合我们这种懒惰又有重度代码洁癖的患者。</p>
 <h2 id="1-问题"><a href="#1-问题" class="headerlink" title="1. 问题"></a>1. 问题</h2><p>看一个查询的例子：</p>
 <pre><code>@RunWith(SpringRunner.class)
 @SpringBootTest
@@ -447,8 +447,6 @@ public class SampleTest {
 <p>代码diff: <a href="https://github.com/ypm0313/lombok/commit/0f05bb694bb67c947d21f80b994f468e3048b72f" target="_blank" rel="noopener">Github</a></p>
 <p>改完后使用ant构建，构建完毕后会在dist目录下生成lombok-1.18.2.jar。手动替换本地maven仓库后。构建我们的项目，正常构建，通过查看User.class文件，发现常量已经正常注入了，并且实现了驼峰命令-&gt;下划线命名的自动转换，证明能正常使用。<br>但是啊，Idea的lombok插件并不能正常识别<code>@ColumnNameContants</code>，Idea里直接引用常量还是报错的，所以还得修改lombok的Idea插件。<br>先写到这，后面继续折腾。</p>
 
-          
-        
       
     </div>
     
@@ -463,336 +461,36 @@ public class SampleTest {
 
     <footer class="post-footer">
       
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
-      
-
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/16/rice-wine/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Murphy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/default_avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Murphy's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/16/rice-wine/" itemprop="url">米酒</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-16T17:00:36+08:00">
-                2018-09-16
-              </time>
-            
-
-            
-
-            
-          </span>
-
+        <div class="post-tags">
           
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/食谱/" itemprop="url" rel="index">
-                    <span itemprop="name">食谱</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
+            <a href="/tags/Mybaits-plus/" rel="tag"># Mybaits-plus</a>
           
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
         </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
-      
-
-      
-        
-          
-            <h2 id="原料"><a href="#原料" class="headerlink" title="原料"></a>原料</h2><ul>
-<li>糯米</li>
-<li>安琪甜酒曲</li>
-<li>玻璃容器</li>
-<li>时间</li>
-</ul>
-<h2 id="做法"><a href="#做法" class="headerlink" title="做法"></a>做法</h2><ol>
-<li>糯米浸泡一夜，至用手可以轻易将米粒碾碎</li>
-<li>蒸锅蒸30分钟，蒸熟后开盖冷却</li>
-<li>冷却至30度左右，一边加入凉白开，一边用手把饭团抓至颗粒分明</li>
-<li>加入适量安琪甜酒曲，搅拌均匀</li>
-<li>将糯米导入玻璃容器，用勺子压实，用筷子在中间戳一个酒窝，以观察出酒情况</li>
-<li>将玻璃容器放置在干燥恒温环境，24h~36h后可食用</li>
-</ol>
-<img title="浸泡后的糯米" src="http://file.peimin.cn/static/images/rice-wine/001.jpg">
-<img title="蒸熟的糯米，晶莹剔透" src="http://file.peimin.cn/static/images/rice-wine/003.jpg">
-<img title="小酒窝" src="http://file.peimin.cn/static/images/rice-wine/004.jpg">
-
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
       
 
       
       
-        <div class="post-eof"></div>
-      
-    </footer>
-  </div>
-  
-  
-  
-  </article>
-
-
-    
       
 
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
-  
-  
-  
-  <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/16/Chinese-sauerkraut-fish/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="name" content="Murphy">
-      <meta itemprop="description" content="">
-      <meta itemprop="image" content="/images/default_avatar.jpg">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Murphy's Blog">
-    </span>
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-                
-                <a class="post-title-link" href="/2018/09/16/Chinese-sauerkraut-fish/" itemprop="url">酸菜鱼</a></h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
             
-              <span class="post-meta-item-icon">
-                <i class="fa fa-calendar-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">发表于</span>
-              
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-16T15:22:11+08:00">
-                2018-09-16
-              </time>
+              <a href="/2018/09/16/rice-wine/" rel="next" title="米酒">
+                <i class="fa fa-chevron-left"></i> 米酒
+              </a>
             
+          </div>
 
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
             
-
-            
-          </span>
-
-          
-            <span class="post-category" >
-            
-              <span class="post-meta-divider">|</span>
-            
-              <span class="post-meta-item-icon">
-                <i class="fa fa-folder-o"></i>
-              </span>
-              
-                <span class="post-meta-item-text">分类于</span>
-              
-              
-                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
-                  <a href="/categories/食谱/" itemprop="url" rel="index">
-                    <span itemprop="name">食谱</span>
-                  </a>
-                </span>
-
-                
-                
-              
-            </span>
-          
-
-          
-            
-          
-
-          
-          
-
-          
-
-          
-
-          
-
+          </div>
         </div>
-      </header>
-    
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-
-      
       
 
       
-        
-          
-            <h2 id="原料"><a href="#原料" class="headerlink" title="原料"></a>原料</h2><ul>
-<li>黑鱼1只</li>
-<li>酸菜</li>
-<li>豆芽</li>
-<li>鸡蛋清半个</li>
-<li>白胡椒</li>
-<li>花椒</li>
-<li>青红辣椒</li>
-<li>大葱，生姜、蒜。</li>
-</ul>
-<img title="酸菜鱼原料" alt="酸菜鱼原料" src="http://file.peimin.cn/static/images/chinese-sauerkraut-fish/001.jpg">
-<h2 id="做法"><a href="#做法" class="headerlink" title="做法"></a>做法</h2><ol>
-<li>黑鱼让卖鱼大叔片成片，鱼骨切段</li>
-<li>鱼片加少许盐，使用清水反复洗净后，加少许盐，半个鸡蛋清，搅拌均匀，静置2分钟</li>
-<li>鱼骨、鱼头、鱼皮洗净。</li>
-<li>豆芽焯水，放入盘底作为底料</li>
-<li>大葱切段，生姜切片，蒜切沫，青红辣椒斜切。</li>
-<li>起锅，烧油，葱姜蒜爆香后，加入鱼骨、鱼头、鱼皮翻炒</li>
-<li>加入酸菜翻炒后，加入足量水，煮10分钟，至鱼汤奶白浓郁</li>
-<li>将鱼骨、鱼头、酸菜捞出</li>
-<li>下鱼片，鱼片煮熟后连同鱼汤倒入盘中</li>
-<li>锅中加油，冷油加入花椒，青红辣椒。待油冒青烟，浇至鱼片之上</li>
-</ol>
-<img title="酸菜鱼" alt="酸菜鱼" src="http://file.peimin.cn/static/images/chinese-sauerkraut-fish/002.jpg">
-          
-        
-      
-    </div>
-    
-    
-    
-
-    
-
-    
-
-    
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </div>
@@ -802,10 +500,11 @@ public class SampleTest {
   </article>
 
 
-    
-  </section>
 
-  
+    <div class="post-spread">
+      
+    </div>
+  </div>
 
 
           </div>
@@ -813,6 +512,10 @@ public class SampleTest {
 
 
           
+
+  
+
+
 
         </div>
         
@@ -833,8 +536,17 @@ public class SampleTest {
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -914,6 +626,22 @@ public class SampleTest {
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-问题"><span class="nav-number">1.</span> <span class="nav-text">1. 问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-一般的解决方案"><span class="nav-number">2.</span> <span class="nav-text">2. 一般的解决方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-更加偷懒的办法"><span class="nav-number">3.</span> <span class="nav-text">3. 更加偷懒的办法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-拓展lombok"><span class="nav-number">4.</span> <span class="nav-text">4. 拓展lombok</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
@@ -1054,6 +782,10 @@ public class SampleTest {
 
 
   
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
 
   
 
