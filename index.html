@@ -81,7 +81,7 @@
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="Murphy&#39;s Blog">
-<meta property="og:url" content="http://yoursite.com/index.html">
+<meta property="og:url" content="http://www.peimin.cn/index.html">
 <meta property="og:site_name" content="Murphy&#39;s Blog">
 <meta property="og:locale" content="zh-Hans">
 <meta name="twitter:card" content="summary">
@@ -115,7 +115,7 @@
 
 
 
-  <link rel="canonical" href="http://yoursite.com/"/>
+  <link rel="canonical" href="http://www.peimin.cn/"/>
 
 
 
@@ -269,7 +269,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/29/Best-practices-using-Wrapper-in-Mybaits-plus/">
+    <link itemprop="mainEntityOfPage" href="http://www.peimin.cn/2018/09/29/Best-practices-using-Wrapper-in-Mybaits-plus/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Murphy">
@@ -376,6 +376,7 @@ public class SampleTest {
         // 根据name查询用户
         QueryWrapper&lt;User&gt; queryWrapper = new QueryWrapper&lt;&gt;();
         queryWrapper.eq(&quot;name&quot;, &quot;zhangsan&quot;);
+        queryWrapper.eq(&quot;is_deleted&quot;, 0);
         User zhangsan = userMapper.selectOne(queryWrapper);
         System.out.println(zhangsan);
     }
@@ -386,6 +387,7 @@ public class SampleTest {
 <li>字段名容易敲错，难以排查；</li>
 <li>如果字段名称变更了，意味着所有相关的业务代码都需要审查一遍；</li>
 </ol>
+<p>(本文基于Mybaits-Plus v3.0.3版本，后续版本可能友好地处理了这个问题)</p>
 <h2 id="2-一般的解决方案"><a href="#2-一般的解决方案" class="headerlink" title="2. 一般的解决方案"></a>2. 一般的解决方案</h2><p>解决这个问题的方法很简单，可以定义常量嘛，我们在实体类中把所有字段名称都定义成常量：</p>
 <pre><code>@Data
 public class User {
@@ -393,11 +395,13 @@ public class User {
     public static final String COLUMN_NAME = &quot;name&quot;;
     public static final String COLUMN_AGE = &quot;age&quot;;
     public static final String COLUMN_EMAIL = &quot;email&quot;;
+    public static final Byte COLUMN_IS_DELETED = &quot;is_deleted&quot;;
 
     private Long id;
     private String name;
     private Integer age;
     private String email;
+    private Byte isDeleted;
 }
 </code></pre><p>然后在代码里就可以直接使用常量了：</p>
 <pre><code>@RunWith(SpringRunner.class)
@@ -412,6 +416,7 @@ public class SampleTest {
         // 根据name查询用户
         QueryWrapper&lt;User&gt; queryWrapper = new QueryWrapper&lt;&gt;();
         queryWrapper.eq(User.COLUMN_NAME, &quot;zhangsan&quot;);
+        queryWrapper.eq(User.COLUMN_IS_DELETED, 0);
         User zhangsan = userMapper.selectOne(queryWrapper);
         System.out.println(zhangsan);
     }
@@ -425,8 +430,9 @@ public class User {
     private String name;
     private Integer age;
     private String email;
+    private Byte isDeleted;
 }
-</code></pre><p>代码干净了不少！但是别急着开心，<code>@FieldNameContants</code>还做不到我们想要的效果，因为实体类的属性通常是采用驼峰命名的，而表字段通常是采用下划线命名的，如果要通过实体类属性获得表字段名，还得做一层字符串转换，这里我们使用mybatisplus内置的<code>StringUtils.camelToUnderline()</code>方法：</p>
+</code></pre><p>代码干净了不少！但是别急着开心，<code>@FieldNameContants</code>还做不到我们想要的效果，因为实体类的属性通常是采用驼峰命名的，而表字段通常是采用下划线命名的(比如本例中的<code>is_deleted</code>字段)，如果要通过实体类属性获得表字段名，还得做一层字符串转换，这里我们使用<code>Mybatis-Plus</code>内置的<code>StringUtils.camelToUnderline()</code>方法：</p>
 <pre><code>@RunWith(SpringRunner.class)
 @SpringBootTest
 public class SampleTest {
@@ -445,7 +451,74 @@ public class SampleTest {
 }
 </code></pre><h2 id="4-拓展lombok"><a href="#4-拓展lombok" class="headerlink" title="4. 拓展lombok"></a>4. 拓展lombok</h2><p>每次引用常量的时候还得通过<code>StringUtils.camelToUnderline()</code>方法转换一遍，相当不爽。一怒之下，改了lombok(1.18.2)源码，基于<code>@FieldNameContants</code>，增加了一个<code>@ColumnNameContants</code>注解，实现自动把属性名由驼峰命名转换为下划线命名。</p>
 <p>代码diff: <a href="https://github.com/ypm0313/lombok/commit/0f05bb694bb67c947d21f80b994f468e3048b72f" target="_blank" rel="noopener">Github</a></p>
-<p>改完后使用ant构建，构建完毕后会在dist目录下生成lombok-1.18.2.jar。手动替换本地maven仓库后。构建我们的项目，正常构建，通过查看User.class文件，发现常量已经正常注入了，并且实现了驼峰命令-&gt;下划线命名的自动转换，证明能正常使用。<br>但是啊，Idea的lombok插件并不能正常识别<code>@ColumnNameContants</code>，Idea里直接引用常量还是报错的，所以还得修改lombok的Idea插件。<br>先写到这，后面继续折腾。</p>
+<p>改完后使用ant构建，构建完毕后会在dist目录下生成lombok-1.18.2.jar。手动替换本地maven仓库后。构建我们的项目，正常构建，通过查看User.class文件，发现常量已经正常注入了，并且实现了驼峰命令-&gt;下划线命名的自动转换，证明能正常使用。<br>但是啊，Idea的lombok插件并不能正常识别<code>@ColumnNameContants</code>，Idea里直接引用常量还是报错的，要去掉这些报错，还得修改lombok的Idea插件。<br>走到这一步，不想再继续折腾下去了，推动lombok官方支持<code>@ColumnNameContants</code>显然不太现实，有没有其他办法呢？</p>
+<h2 id="5-另辟蹊径"><a href="#5-另辟蹊径" class="headerlink" title="5. 另辟蹊径"></a>5. 另辟蹊径</h2><p>翻看<code>Mybatis-Plus</code>的<code>AbstractWrapper</code>源码，发现构造条件的时候都会使用<code>columnToString</code>方法处理一下<code>column</code></p>
+<pre><code>/**
+ * &lt;p&gt;
+ * 普通查询条件
+ * &lt;/p&gt;
+ *
+ * @param condition  是否执行
+ * @param column     属性
+ * @param sqlKeyword SQL 关键词
+ * @param val        条件值
+ */
+protected This addCondition(boolean condition, R column, SqlKeyword sqlKeyword, Object val) {
+    return doIt(condition, () -&gt; columnToString(column), sqlKeyword, () -&gt; formatSql(&quot;{0}&quot;, val));
+}
+</code></pre><p>而<code>QueryWrapper</code>和<code>UpdateWrapper</code>都重写了<code>columnToString</code>方法，实现非常简单，就是把传进来的<code>column</code>原样返回：</p>
+<pre><code>@Override
+protected String columnToString(String column) {
+    return column;
+}
+</code></pre><p>我们只要实现我们自己的Wrapper类，重写<code>columnToString</code>方法，就可以自动把驼峰命名的<code>column</code>转换为下划线命名了！代码如下：</p>
+<pre><code>/**
+* 我们自己的QueryWrapper类
+*/
+public class QWrapper&lt;T&gt; extends QueryWrapper&lt;T&gt; {
+    @Override
+    protected String columnToString(String column) {
+        // 驼峰命名转换为下划线命名
+        return StringUtils.camelToUnderline(column);
+    }
+}
+
+/**
+* 我们自己的UpdateWrapper类
+*/
+public class QWrapper&lt;T&gt; extends UpdateWrapper&lt;T&gt; {
+    @Override
+    protected String columnToString(String column) {
+        // 驼峰命名转换为下划线命名
+        return StringUtils.camelToUnderline(column);
+    }
+}
+</code></pre><p>在构造查询/更新条件的时候，使用<code>QWrapper</code>和<code>UWrapper</code>代替官方的<code>QueryWrapper</code>和<code>UpdateWraper</code>就可以啦！</p>
+<pre><code>@RunWith(SpringRunner.class)
+@SpringBootTest
+public class SampleTest {
+
+    @Autowired
+    private UserMapper userMapper;
+
+    @Test
+    public void testSelect() {
+        // 根据name查询用户
+        QWrapper&lt;User&gt; qWrapper = new QWrapper&lt;&gt;();
+        qWrapper.eq(User.COLUMN_NAME, &quot;zhangsan&quot;);
+        qWrapper.eq(User.COLUMN_IS_DELETED, 0);
+        User zhangsan = userMapper.selectOne(queryWrapper);
+        System.out.println(zhangsan);
+    }
+}
+</code></pre><h2 id="6-总结"><a href="#6-总结" class="headerlink" title="6. 总结"></a>6. 总结</h2><ul>
+<li>使用<code>lombok(v1.18.2)</code>的<code>@FieldNameContants</code>注解实体类，可以自动在实体类中注入所有字段的常量</li>
+<li>重写<code>QueryWrapper</code> <code>UpdateWrapper</code>的<code>columnToString</code>方法，实现将驼峰命名转换为下划线命名</li>
+</ul>
+<hr>
+<h3 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h3><p>由<a href="http://www.peimin.cn/about">Murphy</a>创作并维护的<a href="http://www.peimin.cn/">Murphy’s Blog</a>采用<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" target="_blank" rel="noopener">创作共用保留署名-非商业-禁止演绎4.0国际许可证</a>。</p>
+<p>本文首发于<a href="http://www.peimin.cn/">Murphy’s Blog</a>，版权所有，侵权必究。</p>
+<p>本文永久链接：<a href="http://www.peimin.cn/2018/09/29/Best-practices-using-Wrapper-in-Mybaits-plus/">http://www.peimin.cn/2018/09/29/Best-practices-using-Wrapper-in-Mybaits-plus/</a></p>
 
           
         
@@ -494,7 +567,7 @@ public class SampleTest {
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/16/rice-wine/">
+    <link itemprop="mainEntityOfPage" href="http://www.peimin.cn/2018/09/16/rice-wine/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Murphy">
@@ -604,6 +677,10 @@ public class SampleTest {
 <img title="浸泡后的糯米" src="http://file.peimin.cn/static/images/rice-wine/001.jpg">
 <img title="蒸熟的糯米，晶莹剔透" src="http://file.peimin.cn/static/images/rice-wine/003.jpg">
 <img title="小酒窝" src="http://file.peimin.cn/static/images/rice-wine/004.jpg">
+<hr>
+<h3 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h3><p>由<a href="http://www.peimin.cn/about">Murphy</a>创作并维护的<a href="http://www.peimin.cn/">Murphy’s Blog</a>采用<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" target="_blank" rel="noopener">创作共用保留署名-非商业-禁止演绎4.0国际许可证</a>。</p>
+<p>本文首发于<a href="http://www.peimin.cn/">Murphy’s Blog</a>，版权所有，侵权必究。</p>
+<p>本文永久链接：<a href="http://www.peimin.cn/2018/09/16/rice-wine/">http://www.peimin.cn/2018/09/16/rice-wine/</a></p>
 
           
         
@@ -652,7 +729,7 @@ public class SampleTest {
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://yoursite.com/2018/09/16/Chinese-sauerkraut-fish/">
+    <link itemprop="mainEntityOfPage" href="http://www.peimin.cn/2018/09/16/Chinese-sauerkraut-fish/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="Murphy">
@@ -769,6 +846,11 @@ public class SampleTest {
 <li>锅中加油，冷油加入花椒，青红辣椒。待油冒青烟，浇至鱼片之上</li>
 </ol>
 <img title="酸菜鱼" alt="酸菜鱼" src="http://file.peimin.cn/static/images/chinese-sauerkraut-fish/002.jpg">
+<hr>
+<h3 id="版权声明"><a href="#版权声明" class="headerlink" title="版权声明"></a>版权声明</h3><p>由<a href="http://www.peimin.cn/about">Murphy</a>创作并维护的<a href="http://www.peimin.cn/">Murphy’s Blog</a>采用<a href="https://creativecommons.org/licenses/by-nc-nd/4.0/deed.zh" target="_blank" rel="noopener">创作共用保留署名-非商业-禁止演绎4.0国际许可证</a>。</p>
+<p>本文首发于<a href="http://www.peimin.cn/">Murphy’s Blog</a>，版权所有，侵权必究。</p>
+<p>本文永久链接：<a href="http://www.peimin.cn/2018/09/16/Chinese-sauerkraut-fish/">http://www.peimin.cn/2018/09/16/Chinese-sauerkraut-fish/</a></p>
+
           
         
       
