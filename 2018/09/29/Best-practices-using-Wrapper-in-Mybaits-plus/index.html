@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="Mybatis-plus作为Mybatis的增强工具，在MyBatis的基础上只做增强不做改变，基本的CURD信手拈来，并且吸收了阿里巴巴编码规范，最适合我们这种懒惰又有重度代码洁癖的患者。 1. 问题看一个查询的例子： @RunWith(SpringRunner.class) @SpringBootTest public class SampleTest {      @Autowired">
+<meta name="description" content="Mybatis-plus作为Mybatis的增强工具，在MyBatis的基础上只做增强不做改变，基本的CURD信手拈来，并且吸收了阿里巴巴编码规范，最适合我们这种懒惰又有重度代码洁癖的患者。 问题看一个查询的例子： @RunWith(SpringRunner.class) @SpringBootTest public class SampleTest {      @Autowired     p">
 <meta name="keywords" content="Mybaits-plus">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用Mybatis-plus条件构造器的正确姿势">
 <meta property="og:url" content="http://www.peimin.cn/2018/09/29/Best-practices-using-Wrapper-in-Mybaits-plus/index.html">
 <meta property="og:site_name" content="Murphy&#39;s Blog">
-<meta property="og:description" content="Mybatis-plus作为Mybatis的增强工具，在MyBatis的基础上只做增强不做改变，基本的CURD信手拈来，并且吸收了阿里巴巴编码规范，最适合我们这种懒惰又有重度代码洁癖的患者。 1. 问题看一个查询的例子： @RunWith(SpringRunner.class) @SpringBootTest public class SampleTest {      @Autowired">
+<meta property="og:description" content="Mybatis-plus作为Mybatis的增强工具，在MyBatis的基础上只做增强不做改变，基本的CURD信手拈来，并且吸收了阿里巴巴编码规范，最适合我们这种懒惰又有重度代码洁癖的患者。 问题看一个查询的例子： @RunWith(SpringRunner.class) @SpringBootTest public class SampleTest {      @Autowired     p">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-10-07T03:34:42.804Z">
+<meta property="og:updated_time" content="2018-10-07T05:27:50.561Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="使用Mybatis-plus条件构造器的正确姿势">
-<meta name="twitter:description" content="Mybatis-plus作为Mybatis的增强工具，在MyBatis的基础上只做增强不做改变，基本的CURD信手拈来，并且吸收了阿里巴巴编码规范，最适合我们这种懒惰又有重度代码洁癖的患者。 1. 问题看一个查询的例子： @RunWith(SpringRunner.class) @SpringBootTest public class SampleTest {      @Autowired">
+<meta name="twitter:description" content="Mybatis-plus作为Mybatis的增强工具，在MyBatis的基础上只做增强不做改变，基本的CURD信手拈来，并且吸收了阿里巴巴编码规范，最适合我们这种懒惰又有重度代码洁癖的患者。 问题看一个查询的例子： @RunWith(SpringRunner.class) @SpringBootTest public class SampleTest {      @Autowired     p">
 
 
 
@@ -363,7 +363,7 @@
 
       
         <p><a href="http://mp.baomidou.com/" target="_blank" rel="noopener">Mybatis-plus</a>作为Mybatis的增强工具，在<a href="http://www.mybatis.org" target="_blank" rel="noopener">MyBatis</a>的基础上只做增强不做改变，基本的CURD信手拈来，并且吸收了阿里巴巴编码规范，最适合我们这种懒惰又有重度代码洁癖的患者。</p>
-<h2 id="1-问题"><a href="#1-问题" class="headerlink" title="1. 问题"></a>1. 问题</h2><p>看一个查询的例子：</p>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>看一个查询的例子：</p>
 <pre><code>@RunWith(SpringRunner.class)
 @SpringBootTest
 public class SampleTest {
@@ -382,13 +382,13 @@ public class SampleTest {
     }
 }
 </code></pre><p>得益于强大的条件构造器，0代码就可以实现基本的条件查询，很简单吧？</p>
-<p>BUT，如果你也有代码洁癖，看到这段代码，就会和我一样感觉不舒服。<code>queryWrapper.eq(&quot;name&quot;, &quot;zhangsan&quot;);</code>这行代码，直接把数据表的字段名”name”作为参数使用了，简直难受！没错，这就是我们常常诟病的硬编码。Mybatis的思想就是实现表结构和JAVA对象的自动映射，而这种设计背离了这一思想。<br>业务逻辑里大量充斥这种字段名称硬编码，会导致几个问题：</p>
+<p>BUT，如果你也有代码洁癖，看到这段代码，就会和我一样感觉不舒服。<code>queryWrapper.eq(&quot;name&quot;, &quot;zhangsan&quot;);</code>这行代码，直接把数据表的字段名”name”作为参数使用了，简直难受！这不就是硬编码吗。Mybatis的思想就是实现表结构和JAVA对象的自动映射，这种设计背离了这一思想。<br>业务逻辑里大量充斥这种字段名称硬编码，会导致几个问题：</p>
 <ol>
 <li>字段名容易敲错，难以排查；</li>
 <li>如果字段名称变更了，意味着所有相关的业务代码都需要审查一遍；</li>
 </ol>
 <p>(本文基于Mybaits-Plus v3.0.3版本，后续版本可能友好地处理了这个问题)</p>
-<h2 id="2-一般的解决方案"><a href="#2-一般的解决方案" class="headerlink" title="2. 一般的解决方案"></a>2. 一般的解决方案</h2><p>解决这个问题的方法很简单，可以定义常量嘛，我们在实体类中把所有字段名称都定义成常量：</p>
+<h2 id="一般的解决方案"><a href="#一般的解决方案" class="headerlink" title="一般的解决方案"></a>一般的解决方案</h2><p>解决这个问题的方法很简单，可以定义常量嘛，我们在实体类中把所有字段名称都定义成常量：</p>
 <pre><code>@Data
 public class User {
     public static final String COLUMN_ID = &quot;id&quot;;
@@ -422,7 +422,7 @@ public class SampleTest {
     }
 }
 </code></pre><p>使用常量后，再也不必担心敲错字符啦，修改字段名称也是轻而易举。</p>
-<h2 id="3-更加偷懒的办法"><a href="#3-更加偷懒的办法" class="headerlink" title="3. 更加偷懒的办法"></a>3. 更加偷懒的办法</h2><p>把所有实体类中的属性定义成一个个字符串常量是一件工作量巨大的事情，就像getter() setter()方法一样烦人！有没有简化的办法？<br>当然是用lombok啦！查了下lombok文档，恰好有一个名为<a href="https://projectlombok.org/features/experimental/FieldNameConstants" target="_blank" rel="noopener"><code>@FieldNameContants</code></a>的注解，可以实现自动把类中的所有属性定义成常量。</p>
+<h2 id="更加偷懒的办法"><a href="#更加偷懒的办法" class="headerlink" title="更加偷懒的办法"></a>更加偷懒的办法</h2><p>把所有实体类中的属性定义成一个个字符串常量是一件工作量巨大的事情，就像getter() setter()方法一样烦人！有没有简化的办法？<br>当然是用lombok啦！查了下lombok文档，恰好有一个名为<a href="https://projectlombok.org/features/experimental/FieldNameConstants" target="_blank" rel="noopener"><code>@FieldNameContants</code></a>的注解，可以实现自动把类中的所有属性定义成常量。</p>
 <pre><code>@Data
 @FieldNameContants(prefix=&quot;COLUMN_&quot;)
 public class User {
@@ -449,10 +449,10 @@ public class SampleTest {
         System.out.println(zhangsan);
     }
 }
-</code></pre><h2 id="4-拓展lombok"><a href="#4-拓展lombok" class="headerlink" title="4. 拓展lombok"></a>4. 拓展lombok</h2><p>每次引用常量的时候还得通过<code>StringUtils.camelToUnderline()</code>方法转换一遍，相当不爽。一怒之下，改了lombok(1.18.2)源码，基于<code>@FieldNameContants</code>，增加了一个<code>@ColumnNameContants</code>注解，实现自动把属性名由驼峰命名转换为下划线命名。</p>
+</code></pre><h2 id="拓展lombok"><a href="#拓展lombok" class="headerlink" title="拓展lombok"></a>拓展lombok</h2><p>每次引用常量的时候还得通过<code>StringUtils.camelToUnderline()</code>方法转换一遍，相当不爽。一怒之下，改了lombok(1.18.2)源码，基于<code>@FieldNameContants</code>，增加了一个<code>@ColumnNameContants</code>注解，实现自动把属性名由驼峰命名转换为下划线命名。</p>
 <p>代码diff: <a href="https://github.com/ypm0313/lombok/commit/0f05bb694bb67c947d21f80b994f468e3048b72f" target="_blank" rel="noopener">Github</a></p>
 <p>改完后使用ant构建，构建完毕后会在dist目录下生成lombok-1.18.2.jar。手动替换本地maven仓库后。构建我们的项目，正常构建，通过查看User.class文件，发现常量已经正常注入了，并且实现了驼峰命令-&gt;下划线命名的自动转换，证明能正常使用。<br>但是啊，Idea的lombok插件并不能正常识别<code>@ColumnNameContants</code>，Idea里直接引用常量还是报错的，要去掉这些报错，还得修改lombok的Idea插件。<br>走到这一步，不想再继续折腾下去了，推动lombok官方支持<code>@ColumnNameContants</code>显然不太现实，有没有其他办法呢？</p>
-<h2 id="5-另辟蹊径"><a href="#5-另辟蹊径" class="headerlink" title="5. 另辟蹊径"></a>5. 另辟蹊径</h2><p>翻看<code>Mybatis-Plus</code>的<code>AbstractWrapper</code>源码，发现构造条件的时候都会使用<code>columnToString</code>方法处理一下<code>column</code></p>
+<h2 id="另辟蹊径"><a href="#另辟蹊径" class="headerlink" title="另辟蹊径"></a>另辟蹊径</h2><p>翻看<code>Mybatis-Plus</code>的<code>AbstractWrapper</code>源码，发现构造条件的时候都会使用<code>columnToString</code>方法处理一下<code>column</code></p>
 <pre><code>/**
  * &lt;p&gt;
  * 普通查询条件
@@ -486,7 +486,7 @@ public class QWrapper&lt;T&gt; extends QueryWrapper&lt;T&gt; {
 /**
 * 我们自己的UpdateWrapper类
 */
-public class QWrapper&lt;T&gt; extends UpdateWrapper&lt;T&gt; {
+public class UWrapper&lt;T&gt; extends UpdateWrapper&lt;T&gt; {
     @Override
     protected String columnToString(String column) {
         // 驼峰命名转换为下划线命名
@@ -511,7 +511,7 @@ public class SampleTest {
         System.out.println(zhangsan);
     }
 }
-</code></pre><h2 id="6-总结"><a href="#6-总结" class="headerlink" title="6. 总结"></a>6. 总结</h2><ul>
+</code></pre><h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ul>
 <li>使用<code>lombok(v1.18.2)</code>的<code>@FieldNameContants</code>注解实体类，可以自动在实体类中注入所有字段的常量</li>
 <li>重写<code>QueryWrapper</code> <code>UpdateWrapper</code>的<code>columnToString</code>方法，实现将驼峰命名转换为下划线命名</li>
 </ul>
@@ -709,7 +709,7 @@ public class SampleTest {
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-问题"><span class="nav-number">1.</span> <span class="nav-text">1. 问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-一般的解决方案"><span class="nav-number">2.</span> <span class="nav-text">2. 一般的解决方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-更加偷懒的办法"><span class="nav-number">3.</span> <span class="nav-text">3. 更加偷懒的办法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-拓展lombok"><span class="nav-number">4.</span> <span class="nav-text">4. 拓展lombok</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-另辟蹊径"><span class="nav-number">5.</span> <span class="nav-text">5. 另辟蹊径</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#6-总结"><span class="nav-number">6.</span> <span class="nav-text">6. 总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#版权声明"><span class="nav-number">6.1.</span> <span class="nav-text">版权声明</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#问题"><span class="nav-number">1.</span> <span class="nav-text">问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#一般的解决方案"><span class="nav-number">2.</span> <span class="nav-text">一般的解决方案</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#更加偷懒的办法"><span class="nav-number">3.</span> <span class="nav-text">更加偷懒的办法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#拓展lombok"><span class="nav-number">4.</span> <span class="nav-text">拓展lombok</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#另辟蹊径"><span class="nav-number">5.</span> <span class="nav-text">另辟蹊径</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-number">6.</span> <span class="nav-text">总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#版权声明"><span class="nav-number">6.1.</span> <span class="nav-text">版权声明</span></a></li></ol></li></ol></div>
             
 
           </div>
